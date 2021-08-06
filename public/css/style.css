@@ -1,0 +1,86 @@
+html {
+    font-family: sans-serif;
+}
+
+main {
+    width: 650px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+}
+
+nav {
+    text-align: center;
+    font-weight: bold;
+    margin: 16px 0;
+}
+
+th {
+    background-color: gray;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+}
+
+table.list,
+table.list tr,
+table.list td,
+table.list th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td:first-child {
+    width: 60px;
+    vertical-align: top;
+    word-wrap: pre;
+}
+
+td:nth-child(2) {
+    vertical-align: top;
+}
+
+footer {
+    margin-top: 100px;
+}
+
+.code {
+    font-weight: bold;
+}
+
+.name {
+    font-style: italic;
+}
+
+.number {
+    font-family: monospace;
+    font-size: 17px;
+}
+
+.blue {
+    font-weight: bold;
+    color: #0377FF;
+}
+
+.detail-label {
+    text-align: right;
+}
+
+nav a {
+    padding: 8px;
+}
+
+.address {
+    vertical-align: top;
+}
+
+pre {
+    font-size: 17px;
+}
