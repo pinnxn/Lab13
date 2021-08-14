@@ -4,11 +4,16 @@
 
 @section('content')
 
+<nav>
+    <a href="{{ route('shop-update-form',['code' => $shop->code])}}">Update</a>
+    <a href="{{ route('shop-delete',['code' => $shop['code']])}}">Delete</a>
+</nav>
+
 <table>
     <tr>
         <td class="detail-label"><strong>Code</strong></td>
         <td class="blue">::</td>
-        <td class="number">{{$shop->code}}</td>
+        <td class="number font">{{$shop->code}}</td>
     </tr>
     <tr>
         <td class="detail-label"><strong>Name</strong></td>

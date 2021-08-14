@@ -12,6 +12,7 @@
 
 <body>
     <main>
+    @include('sweetalert::alert')
         <header>
             <h1>@yield('title')</h1>
         </header>
