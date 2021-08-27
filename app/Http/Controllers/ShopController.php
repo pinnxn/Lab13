@@ -18,13 +18,14 @@ class ShopController extends SearchableController
     public function list(ServerRequestInterface $request)
     {
       $data = $this->prepareSearch($request->getQueryParams());
-      $shops = $this->search($data);
+      $shops = $this->search($data)->withCount('products');
 
         return view('Shop.list',[
             'shops' => $shops->paginate(5),
             'data'=> $data,
         ]);
     }
+
 
     public function detail($code){
       $shop = Shop::where('code',$code)->first();
@@ -45,6 +46,20 @@ class ShopController extends SearchableController
 
       return redirect()->route('shop-list');
     }
+
+    public function showProduct(ServerRequestInterface $request, ProductController $productController, $code ){
+      $shop = Shop::where('code',$code)->first();
+      $data = $productController->prepareSearch($request->getQueryParams());
+      $query = $productController->filterBySearch($shop->products(), $data);
+
+      return view('shop.product',[
+        'title' => "Shop {$shop->code} : Product",
+        'shop' =>$shop,
+        'data' => $data,
+        'products' => $query->paginate(5),
+      ]);
+    }
+
 
     public function updateForm($code)
     {

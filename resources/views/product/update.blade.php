@@ -9,22 +9,22 @@
 <table>
     <tr>
         <td><strong>Code</strong></td>
-        <td>::</td>
+        <td class="blue">::</td>
         <td><input type="text" name="code" value="{{$product->code}}"></td>
     </tr>
     <tr>
         <td><strong>Name</strong></td>
-        <td>::</td>
+        <td class="blue">::</td>
         <td><input type="text" name="name" value="{{$product->name}}"></td>
     </tr>
     <tr>
         <td><strong>Price</strong></td>
-        <td>::</td>
+        <td class="blue">::</td>
         <td><input type="text" name="price" value="{{$product->price}}"></td>
     </tr>
     <tr>
         <td><strong>Description</strong></td>
-        <td>::</td>
+        <td class="blue">::</td>
         <td><textarea name="description" cols="30" rows="10" >{{$product->description}}</textarea></td>
     </tr>
 </table>

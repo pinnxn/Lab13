@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Shop extends Model
+class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code','name','owner','latitude','longitude','address'];
+    protected $fillable = ['code','name','description'];
 
     function products(){
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
+
 }

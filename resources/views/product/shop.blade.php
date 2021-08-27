@@ -1,8 +1,15 @@
 @extends('layouts.main')
 
-@section('title','Shop : List')
+@section('title', $title)
 
 @section('content')
+
+<nav>
+    <ul>
+        <li><a href="{{ route('product-detail',['code' => $product->code])}}">&lt; Back</a></li>
+    </ul>
+</nav>
+
 
 <form class="form" action="{{ route('shop-list')}}" method="grt">
 
@@ -31,14 +38,12 @@
         <th>Code</th>
         <th>Name</th>
         <th>Owner</th>
-        <th>No. of Products</th>
     </tr>
     @foreach($shops as $shop)
     <tr>
         <td class="code"><a href="{{ route('shop-detail',['code'=> $shop->code]) }}">{{$shop->code}}</a></td>
         <td>{{$shop->name}}</td>
         <td>{{$shop->owner}}</td>
-        <td>{{$shop->products_count}}</td>
     </tr>
     @endforeach
 </table>

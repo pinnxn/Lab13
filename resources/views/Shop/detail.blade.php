@@ -5,6 +5,7 @@
 @section('content')
 
 <nav>
+    <a href="{{ route('shop-product',['code' => $shop->code])}}">Show Product</a>
     <a href="{{ route('shop-update-form',['code' => $shop->code])}}">Update</a>
     <a href="{{ route('shop-delete',['code' => $shop['code']])}}">Delete</a>
 </nav>

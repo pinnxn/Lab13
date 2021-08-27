@@ -17,7 +17,7 @@ class ProductController extends SearchableController
       return  Product::orderBy('code');
     }
 
-    public function preparSearch($data)
+    public function prepareSearch($data)
     {
       $data = parent::prepareSearch($data);
       $data = array_merge([
@@ -39,20 +39,32 @@ class ProductController extends SearchableController
       return $query;
     }
 
-    public function search($data){
-      $query = parent::search($data);
-      $query = $this->filterByPrice($query, $data['minPrice'], $data['maxPrice']);
+    public function filterBySearch($query, $data)
+    {
+     
+     $query = parent::filterBySearch($query, $data);
+     $query = $this->filterByPrice($query, $data['minPrice'], $data['maxPrice']);
 
-      return $query;
+     return $query; 
     }
+
+
+   //public function search($data){
+   //  $query = parent::search($data);
+   //  $query = $this->filterByPrice($query, $data['minPrice'], $data['maxPrice']);
+
+   // return $query;
+  // }
+
+    
 
     public function list(ServerRequestInterface $request)
     {
-      $data = $this->preparSearch($request->getQueryParams());
-      $products = $this->search($data);
+      $data = $this->prepareSearch($request->getQueryParams());
+      $products = $this->search($data)->withCount('shops');
        
        return view('product.list',[
-         'products' => $products->paginate(2),
+         'products' => $products->paginate(5),
          'data' => $data,
        ]);
     }
@@ -75,6 +87,19 @@ class ProductController extends SearchableController
       Product::create($data);
 
       return redirect()->route('product-list');
+    }
+
+    public function showShop(ServerRequestInterface $request, ShopController $shopController , $code ){
+      $product = Product::where('code',$code)->first();
+      $data = $shopController->prepareSearch($request->getQueryParams());
+      $query = $shopController->filterBySearch($product->shops(), $data);
+
+      return view('product.shop',[
+        'title' => "Product {$product->code} : Shop",
+        'product' =>$product,
+        'data' => $data,
+        'shops' => $query->paginate(5),
+      ]);
     }
 
     public function updateForm($code)

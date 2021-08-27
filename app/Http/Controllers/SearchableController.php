@@ -35,8 +35,12 @@ class SearchableController extends Controller
        return $data;
     }
 
+    function filterBySearch($query, $data){
+        return $this->filterByTerm($query, $data['term']);
+    }
+
     public function search($data){
         $query = $this->getQuery();
-        return $this->filterByTerm($query, $data['term']);
+       return $this->filterBySearch($query, $data);
     }
 }

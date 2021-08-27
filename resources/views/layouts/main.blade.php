@@ -19,6 +19,7 @@
 
         <nav>
             <a href="{{route('product-list')}}">Product</a>
+            <a href="{{route('category-list')}}">Category</a>
             <a href="{{route('shop-list')}}">Shop</a>
         </nav>
         

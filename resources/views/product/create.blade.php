@@ -9,22 +9,22 @@
     <table>
         <tr>
             <td><strong>Code</strong></td>
-            <td>::</td>
+            <td class="blue">::</td>
             <td><input type="text" name="code"></td>
         </tr>
         <tr>
             <td><strong>Name</strong></td>
-            <td>::</td>
+            <td class="blue">::</td>
             <td><input type="text" name="name"></td>
         </tr>
         <tr>
             <td><strong>Price</strong></td>
-            <td>::</td>
+            <td class="blue">::</td>
             <td><input type="number" name="price"></td>
         </tr>
         <tr>
         <td><strong>Description</strong></td>
-        <td>::</td>
+        <td class="blue">::</td>
         <td><textarea name="description" cols="30" rows="10"></textarea></td>
     </tr>
     </table>
