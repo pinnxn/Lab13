@@ -39,6 +39,7 @@
     <tr>
         <th>Code</th>
         <th>Name</th>
+        <th>Category</th>
         <th>Price</th>
         <th>&nbsp;</th>
     </tr>
@@ -46,6 +47,7 @@
     <tr>
         <td class="code"><a href="{{ route('product-detail',['code'=> $product->code]) }}">{{$product->code}}</a></td>
         <td>{{$product->name}}</td>
+        <td>{{$product->category->name}}</td>
         <td>{{number_format((double)$product->price, 2) }}</td>
         <td><a href="{{ route('shop-remove-product', ['product' => $product->code,'shop' => $shop->code])}}">Remove</a></td>
     </tr>
