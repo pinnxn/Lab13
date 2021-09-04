@@ -22,6 +22,11 @@
         <td class="name">{{$product->name}}</td>
     </tr>
     <tr>
+        <td><strong>Category</strong></td>
+        <td class="blue">::</td>
+        <td class="name"> [{{$product->category->code}}] {{$product->category->name}}</td>
+    </tr>
+    <tr>
         <td><strong>Price</strong></td>
         <td class="blue">::</td>
         <td class="number">{{number_format((double) $product->price , 2) }}</td>

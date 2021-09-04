@@ -10,7 +10,7 @@
     </ul>
 </nav>
 
-<form class="form" action="{{ route('category-list')}}" method="grt">
+<form class="form" action="{{ route('category-list')}}" method="get">
     
 
     <table>
@@ -18,6 +18,7 @@
             <td> <label for="term">Search</label></td>
             <td class="blue">::</td>
             <td><input type="text" name="term" id="term" value="{{$data['term']}}"></td>
+            <td class="actions"><button class="blue-box" type="submit">Search</button> <a  href="{{ route('product-list')}}"><button class="green-box">Clear</button></a></td>
         </tr>
         <tr>
             <td> <label for="minPrice">Min Price</label></td>
@@ -31,16 +32,8 @@
         </tr>
 </table>
 </form>
-<div class="actions">
-    <button type="submit">Search</button>
 
-    <a href="{{ route('product-list')}}">
-        <button>Clear</button>
-    </a>
-    </div>
-
-
-<a class="link" href="{{ route('product-create-form')}}">New Product</a>
+<a class="link"  href="{{ route('category-add-product-form', ['code' => $category->code])}}">Add Shop</a>
 
 <table class="list"> 
     <tr>

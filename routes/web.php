@@ -33,6 +33,11 @@ Route::get('/product/{code}',[ProductController::class,'detail'])->name('product
 Route::get('/product/{code}/shop',[ProductController::class,'showShop'])->name('product-shop');
 
 
+Route::get('/product/{product}/shop/add',[ProductController::class,'addShopForm'])->name('product-add-shop-form'); 
+Route::post('/product/{product}/shop/add',[ProductController::class,'addShop'])->name('product-add-shop');
+
+Route::get('/product/{product}/shop/{shop}/remove',  [ProductController::class, 'removeShop'])->name('product-remove-shop');
+
 
 Route::get('/shop',[ShopController::class,'list'])->name('shop-list');
 Route::get('/shop/create',[ShopController::class,'createForm'])->name('shop-create-form');
@@ -47,8 +52,10 @@ Route::get('/shop/{code}',[ShopController::class,'detail'])->name('shop-detail')
 
 Route::get('/shop/{code}/product',[ShopController::class,'showProduct'])->name('shop-product');
 
+Route::get('/shop/{code}/product/add',[ShopController::class,'addProductForm'])->name('shop-add-product-form');
+Route::post('/shop/{code}/product/add',[ShopController::class,'addProduct'])->name('shop-add-product');
 
-
+Route::get('/shop/{shop}/product/{product}/remove',  [ShopController::class, 'removeProduct'])->name('shop-remove-product');
 
 Route::get('/category',[CategoryController::class,'list'])->name('category-list');
 Route::get('/category/create',[CategoryController::class,'createForm'])->name('category-create-form');
@@ -63,4 +70,5 @@ Route::get('/category/{code}',[CategoryController::class,'detail'])->name('categ
 
 Route::get('/category/{code}/product',[CategoryController::class,'showProduct'])->name('category-product');
 
-
+Route::get('/category/{code}/product/add',[CategoryController::class,'addProductForm'])->name('category-add-product-form');
+Route::post('/category/{code}/product/add',[CategoryController::class,'addProduct'])->name('category-add-product');

@@ -43,4 +43,8 @@ class SearchableController extends Controller
         $query = $this->getQuery();
        return $this->filterBySearch($query, $data);
     }
+
+    public function find($code){
+        return $this->getQuery()->where('code',$code)->firstOrFail();
+    }
 }

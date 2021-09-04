@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Product;
 use App\Models\Shop;
 
 use Illuminate\Http\Request;
@@ -11,6 +11,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ShopController extends SearchableController
 {
+  public $title = 'Shop';
+
     public function getQuery(){
       return Shop::orderBy('code');
     }
@@ -59,6 +61,57 @@ class ShopController extends SearchableController
         'products' => $query->paginate(5),
       ]);
     }
+
+    public function addProductForm(ServerRequestInterface $request,  ProductController $productController, $code)
+  {
+    $shop = $this->find($code);
+    $query = Product::orderBy('code')->whereDoesntHave('shops', function ($innerQuery) use ($shop) {
+      return $innerQuery->where('code', $shop->code);
+    });
+    $data =$productController->prepareSearch($request->getQueryParams());
+    $query =$productController->filterBySearch($query, $data);
+
+    return view('shop.add-product-form', [
+      'title' => "{$this->title} {$shop->code} : Add Product", 'data' => $data,
+      'shop' => $shop,
+      'products' => $query->paginate(5),
+    ]);
+  }
+
+  function addProduct(ServerRequestInterface $request,  ProductController $productController, $code) 
+  { 
+    $shop = $this->find($code); 
+    $data = $request->getParsedBody(); 
+    $product =$productController->find($data['product']); 
+    $shop->products()->attach($product); 
+    return redirect()->back(); 
+  } 
+
+  function removeProduct( $shopCode,$productCode) { 
+    $shop = $this->find($shopCode); 
+    $product = $shop->products() ->where('code', $productCode)->firstOrFail() ; 
+    $shop->products()->detach($product); 
+    
+    return redirect()->back(); 
+    } 
+
+    public function filterByTerm($query, $term)
+ {
+        if(!empty($term)) {
+            $words = preg_split('/\s+/', $term);
+
+            foreach($words as $word) {
+                $query->where(function($innerQuery) use ($word) {
+                    return $innerQuery
+                            ->where('name','LIKE',"%{$word}%")
+                            ->orWhere('code','LIKE',"%{$word}%")
+                            ->orWhere('owner','LIKE',"%{$word}%");
+                });
+            }
+        }
+
+        return $query;
+ }
 
 
     public function updateForm($code)

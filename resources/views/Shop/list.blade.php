@@ -4,7 +4,7 @@
 
 @section('content')
 
-<form class="form" action="{{ route('shop-list')}}" method="grt">
+<form class="form" action="{{ route('shop-list')}}" method="get">
 
     <table>
         <tr>

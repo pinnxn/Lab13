@@ -6,12 +6,12 @@
 
 <nav>
     <ul>
-        <li><a href="{{ route('product-detail',['code' => $product->code])}}">&lt; Back</a></li>
+        <li><a href="{{ route('product-shop',['code' => $product->code])}}">&lt; Back</a></li>
     </ul>
 </nav>
 
 
-<form class="form" action="{{ route('shop-list')}}" method="get">
+<form class="form" action="{{route('product-add-shop', ['product' => $product->code])}}" method="get">
 
     <table>
         <tr>
@@ -24,10 +24,10 @@
 
 </form>
 
+
+<form class="link"  action="{{route('product-add-shop', ['product' => $product->code])}}" method="post" >
+    @csrf
 <br>
-
-<a class="link"  href="{{ route('product-add-shop-form', ['product' => $product->code])}}">Add Shop</a>
-
 
 <table class="list"> 
     <tr>
@@ -35,16 +35,19 @@
         <th>Name</th>
         <th>Owner</th>
         <th>&nbsp;</th>
+
     </tr>
     @foreach($shops as $shop)
     <tr>
         <td class="code"><a href="{{ route('shop-detail',['code'=> $shop->code]) }}">{{$shop->code}}</a></td>
         <td>{{$shop->name}}</td>
         <td>{{$shop->owner}}</td>
-        <td><a href="{{ route('product-remove-shop', ['product' => $product->code,'shop' => $shop->code])}}">Remove</a></td>
+        <td><button type="submit" name="shop" value="{{ $shop->code }}"> Add </button></td> 
     </tr>
     @endforeach
 </table>
+
+</form>
 
 {{$shops->links()}}
 

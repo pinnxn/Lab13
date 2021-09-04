@@ -10,7 +10,7 @@
     </ul>
 </nav>
 
-<form class="form" action="{{ route('shop-list')}}" method="grt">
+<form class="form" action="{{ route('shop-list')}}" method="get">
     
 
     <table>
@@ -18,6 +18,7 @@
             <td> <label for="term">Search</label></td>
             <td class="blue">::</td>
             <td><input type="text" name="term" id="term" value="{{$data['term']}}"></td>
+            <td class="actions"><button class="blue-box" type="submit">Search</button> <a  href="{{ route('product-list')}}"><button class="green-box">Clear</button></a></td>
         </tr>
         <tr>
             <td> <label for="minPrice">Min Price</label></td>
@@ -31,28 +32,22 @@
         </tr>
 </table>
 </form>
-<div class="actions">
-    <button type="submit">Search</button>
 
-    <a href="{{ route('product-list')}}">
-        <button>Clear</button>
-    </a>
-    </div>
-
-
-<a class="link" href="{{ route('product-create-form')}}">New Product</a>
+<a class="link"  href="{{route('shop-add-product-form',['code' => $shop->code])}}">Add Product</a>
 
 <table class="list"> 
     <tr>
         <th>Code</th>
         <th>Name</th>
         <th>Price</th>
+        <th>&nbsp;</th>
     </tr>
     @foreach($products as $product)
     <tr>
         <td class="code"><a href="{{ route('product-detail',['code'=> $product->code]) }}">{{$product->code}}</a></td>
         <td>{{$product->name}}</td>
         <td>{{number_format((double)$product->price, 2) }}</td>
+        <td><a href="{{ route('shop-remove-product', ['product' => $product->code,'shop' => $shop->code])}}">Remove</a></td>
     </tr>
     @endforeach
 </table>

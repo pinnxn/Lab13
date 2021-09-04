@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Category;
-
+use App\Models\Product;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Void_;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CategoryController extends SearchableController
 {
+  public $title = 'Category';
+
     public function getQuery(){
       return Category::orderBy('code');
     }
@@ -59,6 +61,31 @@ class CategoryController extends SearchableController
         'products' => $query->paginate(5),
       ]);
     }
+
+    public function addProductForm(ServerRequestInterface $request,  ProductController $productController, $code)
+    {
+      $category = $this->find($code);
+      $query = Product::orderBy('code')->whereDoesntHave('category', function ($innerQuery) use ($category) {
+        return $innerQuery->where('code', $category->code);
+      });
+      $data =$productController->prepareSearch($request->getQueryParams());
+      $query =$productController->filterBySearch($query, $data);
+  
+      return view('category.add-product-form', [
+        'title' => "{$this->title} {$category->code} : Add Category", 'data' => $data,
+        'category' => $category,
+        'products' => $query->paginate(5),
+      ]);
+    }
+  
+    function addProduct(ServerRequestInterface $request,  ProductController $productController, $code) 
+    { 
+      $category = $this->find($code); 
+      $data = $request->getParsedBody(); 
+      $product =$productController->find($data['product']); 
+      $category->products()->save($product); 
+      return redirect()->back(); 
+    } 
 
 
     public function updateForm($code)
