@@ -21,6 +21,7 @@ class ShopController extends SearchableController
     {
       $data = $this->prepareSearch($request->getQueryParams());
       $shops = $this->search($data)->withCount('products');
+      session()->put('bookmark.shop-detail', $request->getUri());
 
         return view('Shop.list',[
             'shops' => $shops->paginate(5),
@@ -44,15 +45,16 @@ class ShopController extends SearchableController
     public function create(ServerRequestInterface $request)
     {  
       $data = $request->getParsedBody();
-      Shop::create($data);
-
-      return redirect()->route('shop-list');
+      $shop = Shop::create($data);
+      return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was created.");
+      // return redirect()->route('shop-list');
     }
 
     public function showProduct(ServerRequestInterface $request, ProductController $productController, $code ){
       $shop = Shop::where('code',$code)->first();
       $data = $productController->prepareSearch($request->getQueryParams());
       $query = $productController->filterBySearch($shop->products(), $data);
+      session()->put('bookmark.product.detail', $request->getUri());
 
       return view('shop.product',[
         'title' => "Shop {$shop->code} : Product",
@@ -84,6 +86,7 @@ class ShopController extends SearchableController
     $data = $request->getParsedBody(); 
     $product =$productController->find($data['product']); 
     $shop->products()->attach($product); 
+    return redirect()->route('shop-list')->with('status',"Product {$product->code} was added to Shop {$shop->code}.");
     return redirect()->back(); 
   } 
 
@@ -91,7 +94,7 @@ class ShopController extends SearchableController
     $shop = $this->find($shopCode); 
     $product = $shop->products() ->where('code', $productCode)->firstOrFail() ; 
     $shop->products()->detach($product); 
-    
+    return redirect()->route('shop-list')->with('status',"Product {$product->code} was removed to Shop {$shop->code}.");
     return redirect()->back(); 
     } 
 
@@ -131,7 +134,8 @@ class ShopController extends SearchableController
 
      $shop->update($data);
 
-     return redirect()->route('shop-detail',['code'=> $shop['code']]);
+     return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was updated.");
+    //  return redirect()->route('shop-detail',['code'=> $shop['code']]);
     }
 
     public function delete($code)
@@ -140,6 +144,6 @@ class ShopController extends SearchableController
 
       $shop->delete();
 
-      return redirect()->route('shop-list');
+      return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was deleted.");
     }
 }

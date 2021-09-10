@@ -22,12 +22,19 @@
             <a href="{{route('category-list')}}">Category</a>
             <a href="{{route('shop-list')}}">Shop</a>
         </nav>
+
+        @if(session()->has('status'))
+        <div class="status">
+            <span class="info">{{session()->get('status')}}</span>
+        </div>
+        @endif
+        <br>
         
         <section>
             @yield('content')
         </section>
 
-        <footer>
+        <footer class="footer">
             Copyright Week-07, 2021 Janyarat's Database
         </footer>
     </main>

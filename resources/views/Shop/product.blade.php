@@ -4,11 +4,7 @@
 
 @section('content')
 
-<nav>
-    <ul>
-        <li><a href="{{ route('shop-detail',['code' => $shop->code])}}">&lt; Back</a></li>
-    </ul>
-</nav>
+
 
 <form class="form" action="{{ route('shop-list')}}" method="get">
     
@@ -31,6 +27,7 @@
             <td><input type="text" name="maxPrice" id="maxPrice" value="{{$data['maxPrice']}}"></td>
         </tr>
 </table>
+<br>
 </form>
 
 <a class="link"  href="{{route('shop-add-product-form',['code' => $shop->code])}}">Add Product</a>
@@ -53,6 +50,10 @@
     </tr>
     @endforeach
 </table>
+<br>
+<nav>
+    <a href="{{ route('shop-detail',['code' => $shop->code])}}">&lt; Back</a></li>
+</nav>
 
 {{ $products->links() }}
 

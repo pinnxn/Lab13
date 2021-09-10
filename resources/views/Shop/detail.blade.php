@@ -8,6 +8,7 @@
     <a href="{{ route('shop-product',['code' => $shop->code])}}">Show Product</a>
     <a href="{{ route('shop-update-form',['code' => $shop->code])}}">Update</a>
     <a href="{{ route('shop-delete',['code' => $shop['code']])}}">Delete</a>
+    <a href="{{ session()->get('bookmark.shop-detail',route('shop-list'))}}">&lt; Back</a>
 </nav>
 
 <table>

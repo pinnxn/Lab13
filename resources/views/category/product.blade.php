@@ -4,11 +4,6 @@
 
 @section('content')
 
-<nav>
-    <ul>
-        <li><a href="{{ route('category-detail',['code' => $category->code])}}">&lt; Back</a></li>
-    </ul>
-</nav>
 
 <form class="form" action="{{ route('category-list')}}" method="get">
     
@@ -33,7 +28,7 @@
 </table>
 </form>
 
-<a class="link"  href="{{ route('category-add-product-form', ['code' => $category->code])}}">Add Shop</a>
+<a class="link"  href="{{ route('category-add-product-form', ['code' => $category->code])}}">Add Product</a>
 
 <table class="list"> 
     <tr>
@@ -49,6 +44,12 @@
     </tr>
     @endforeach
 </table>
+<br>
+<nav>
+    <ul>
+        <li><a href="{{ route('category-detail',['code' => $category->code])}}">&lt; Back</a></li>
+    </ul>
+</nav>
 
 {{ $products->links() }}
 

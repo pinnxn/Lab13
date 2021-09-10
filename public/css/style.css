@@ -146,3 +146,24 @@ form td:first-child{
     font-family: monospace;
     text-align: right;
 }
+
+.status{
+    display: block;
+    text-align: center;
+    margin: 1em auto;
+}
+
+.info{
+    
+    display: inline-block;
+    border: 1px solid black;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background-color: rgb(152, 184, 255);
+    color: blue;
+}
+
+.footer{
+    text-align: center;
+}

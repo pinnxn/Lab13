@@ -21,6 +21,7 @@ class CategoryController extends SearchableController
     {
       $data = $this->prepareSearch($request->getQueryParams());
       $categories = $this->search($data)->withCount('products');
+      session()->put('bookmark.category-detail', $request->getUri());
 
         return view('category.list',[
             'categories' => $categories->paginate(5),
@@ -44,15 +45,16 @@ class CategoryController extends SearchableController
     public function create(ServerRequestInterface $request)
     {  
       $data = $request->getParsedBody();
-      Category::create($data);
-
-      return redirect()->route('category-list');
+      $category = Category::create($data);
+      return redirect()->route('category-list')->with('status',"Category {$category->code} was created.");
+      // return redirect()->route('category-list');
     }
 
     public function showProduct(ServerRequestInterface $request, ProductController $productController, $code ){
       $category = Category::where('code',$code)->first();
       $data = $productController->prepareSearch($request->getQueryParams());
       $query = $productController->filterBySearch($category->products(), $data);
+      session()->put('bookmark.product.detail', $request->getUri());
 
       return view('category.product',[
         'title' => "category {$category->code} : Product",
@@ -84,6 +86,7 @@ class CategoryController extends SearchableController
       $data = $request->getParsedBody(); 
       $product =$productController->find($data['product']); 
       $category->products()->save($product); 
+      return redirect()->route('category-list')->with('status',"Product {$product->code} was added to Category {$category->code}.");
       return redirect()->back(); 
     } 
 
@@ -105,7 +108,9 @@ class CategoryController extends SearchableController
 
      $category->update($data);
 
-     return redirect()->route('category-detail',['code'=> $category['code']]);
+     return redirect()->route('category-list')->with('status',"Category {$category->code} was updated.");
+
+     //return redirect()->route('category-detail',['code'=> $category['code']]);
     }
 
     public function delete($code)
@@ -113,7 +118,8 @@ class CategoryController extends SearchableController
       $category = Category::where('code',$code)->first();
 
       $category->delete();
+      return redirect()->route('category-list')->with('status',"Category {$category->code} was deleted.");
 
-      return redirect()->route('category-list');
+      // return redirect()->route('category-list');
     }
 }

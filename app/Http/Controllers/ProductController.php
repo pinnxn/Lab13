@@ -63,10 +63,13 @@ class ProductController extends SearchableController
     $data = $this->prepareSearch($request->getQueryParams());
     $products = $this->search($data)->withCount('shops');
 
+    session()->put('bookmark.product-detail', $request->getUri());
+
     return view('product.list', [
       'products' => $products->paginate(3),
       'data' => $data,
     ]);
+
   }
 
 
@@ -102,9 +105,9 @@ class ProductController extends SearchableController
   public function create(ServerRequestInterface $request)
   {
     $data = $request->getParsedBody();
-    Product::create($data);
+    $product = Product::create($data);
 
-    return redirect()->route('product-list');
+    return redirect()->route('product-list')->with('status',"Product {$product->code} was created.");
   }
 
   public function showShop(ServerRequestInterface $request, ShopController $shopController, $code)
@@ -143,14 +146,16 @@ class ProductController extends SearchableController
     $data = $request->getParsedBody(); 
     $shop = $shopController->find($data['shop']); 
     $product->shops()->attach($shop); 
+    return redirect()->route('product-list')->with('status',"Shop {$shop->code} was added to Product {$product->code}.");
     return redirect()->back(); 
+    
   } 
 
   function removeShop($productCode, $shopCode) { 
     $product = $this->find($productCode); 
     $shop = $product->shops() ->where('code', $shopCode)->firstOrFail() ; 
     $product->shops()->detach($shop); 
-
+    return redirect()->route('product-list')->with('status',"Shop {$shop->code} was removed from Product {$product->code}.");
     return redirect()->back(); 
     } 
     
@@ -193,7 +198,9 @@ class ProductController extends SearchableController
 
     $product->update($data);
 
-    return redirect()->route('product-detail', ['code' => $product['code']]);
+    return redirect()->route('product-list')->with('status',"Product {$product->code} was updated.");
+
+    // return redirect()->route('product-detail', ['code' => $product['code']]);
   }
 
   public function delete($code)
@@ -202,6 +209,6 @@ class ProductController extends SearchableController
 
     $product->delete();
 
-    return redirect()->route('product-list');
+    return redirect(session()->get('bookmark.product-detail',route('product-list')))->with('status',"Product {$product->code} was deleted.");
   }
 }

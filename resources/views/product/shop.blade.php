@@ -4,12 +4,6 @@
 
 @section('content')
 
-<nav>
-    <ul>
-        <li><a href="{{ route('product-detail',['code' => $product->code])}}">&lt; Back</a></li>
-    </ul>
-</nav>
-
 
 <form class="form" action="{{ route('shop-list')}}" method="get">
 
@@ -45,6 +39,12 @@
     </tr>
     @endforeach
 </table>
+<br>
+<nav>
+    <ul>
+        <li><a href="{{ route('product-detail',['code' => $product->code])}}">&lt; Back</a></li>
+    </ul>
+</nav>
 
 {{$shops->links()}}
 
