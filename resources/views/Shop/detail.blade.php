@@ -6,8 +6,12 @@
 
 <nav>
     <a href="{{ route('shop-product',['code' => $shop->code])}}">Show Product</a>
+    @can('update', \App\Models\Shop::class)
     <a href="{{ route('shop-update-form',['code' => $shop->code])}}">Update</a>
+    @endcan
+    @can('update', \App\Models\Shop::class)
     <a href="{{ route('shop-delete',['code' => $shop['code']])}}">Delete</a>
+    @endcan
     <a href="{{ session()->get('bookmark.shop-detail',route('shop-list'))}}">&lt; Back</a>
 </nav>
 

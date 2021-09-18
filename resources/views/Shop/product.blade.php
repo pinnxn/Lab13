@@ -29,9 +29,9 @@
 </table>
 <br>
 </form>
-
+@can('update', \App\Models\Shop::class)
 <a class="link"  href="{{route('shop-add-product-form',['code' => $shop->code])}}">Add Product</a>
-
+@endcan
 <table class="list"> 
     <tr>
         <th>Code</th>

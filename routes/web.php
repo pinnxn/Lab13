@@ -3,7 +3,10 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/auth/login', [LoginController::class, 'loginForm']) ->name('login'); 
+Route::post('/auth/login', [LoginController::class, 'authenticate']) ->name('authenticate'); 
+Route::get('/auth/logout', [LoginController::class, 'logout']) ->name('logout');
 
 
 Route::get('/product',[ProductController::class,'list'])->name('product-list');
@@ -72,3 +78,15 @@ Route::get('/category/{code}/product',[CategoryController::class,'showProduct'])
 
 Route::get('/category/{code}/product/add',[CategoryController::class,'addProductForm'])->name('category-add-product-form');
 Route::post('/category/{code}/product/add',[CategoryController::class,'addProduct'])->name('category-add-product');
+
+
+Route::get('/user',[UserController::class,'list'])->name('user-list');
+Route::get('/user/create',[UserController::class,'createForm'])->name('user-create-form');
+Route::post('/user/create',[UserController::class,'create'])->name('user-create');
+
+Route::get('/user{email}/update',[UserController::class,'updateForm'])->name('user-update-form');
+Route::post('/user{email}/update',[UserController::class,'update'])->name('user-update');
+
+Route::get('/user{email}/delete',[UserController::class,'delete'])->name('user-delete');
+
+Route::get('/user/{email}',[UserController::class,'detail'])->name('user-detail');

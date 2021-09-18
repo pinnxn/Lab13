@@ -6,8 +6,12 @@
 
 <nav>
     <a href="{{ route('category-product',['code' => $category->code])}}">Show Product</a>
+    @can('update', \App\Models\Category::class)
     <a href="{{ route('category-update-form',['code' => $category->code])}}">Update</a>
+    @endcan
+    @can('delete', $category)
     <a href="{{ route('category-delete',['code' => $category['code']])}}">Delete</a>
+    @endcan
     <a href="{{ session()->get('bookmark.category-detail',route('category-list'))}}">&lt; Back</a>
 </nav>
 

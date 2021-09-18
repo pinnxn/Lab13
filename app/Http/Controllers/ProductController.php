@@ -12,6 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ProductController extends SearchableController
 {
+  public function __construct()
+    {
+        $this->middleware('auth');
+    }
   public $title = 'Product';
 
   public function getQuery()
@@ -58,6 +62,9 @@ class ProductController extends SearchableController
   // return $query;
   // }
 
+  
+
+
   public function list(ServerRequestInterface $request)
   {
     $data = $this->prepareSearch($request->getQueryParams());
@@ -96,18 +103,23 @@ class ProductController extends SearchableController
 
   public function createForm()
   {
+    $this->authorize('create', Product::class);
    $categories = Category::orderBy('code')->get();
     return view('product.create', [
       'categories' => $categories,
     ]);
+    
   }
 
   public function create(ServerRequestInterface $request)
   {
+    $this->authorize('create', Product::class); 
     $data = $request->getParsedBody();
     $product = Product::create($data);
 
     return redirect()->route('product-list')->with('status',"Product {$product->code} was created.");
+
+   
   }
 
   public function showShop(ServerRequestInterface $request, ShopController $shopController, $code)
@@ -126,6 +138,7 @@ class ProductController extends SearchableController
 
   public function addShopForm(ServerRequestInterface $request, ShopController $shopController, $code)
   {
+    $this->authorize('update', Product::class); 
     $product = $this->find($code);
     $query = Shop::orderBy('code')->whereDoesntHave('products', function ($innerQuery) use ($product) {
       return $innerQuery->where('code', $product->code);
@@ -138,16 +151,20 @@ class ProductController extends SearchableController
       'product' => $product,
       'shops' => $query->paginate(5),
     ]);
+
+   
   }
 
   function addShop(ServerRequestInterface $request, ShopController $shopController, $code) 
   { 
+    $this->authorize('update', Product::class); 
     $product = $this->find($code); 
     $data = $request->getParsedBody(); 
     $shop = $shopController->find($data['shop']); 
     $product->shops()->attach($shop); 
     return redirect()->route('product-list')->with('status',"Shop {$shop->code} was added to Product {$product->code}.");
     return redirect()->back(); 
+    
     
   } 
 
@@ -161,6 +178,7 @@ class ProductController extends SearchableController
     
     public function filterByTerm($query, $term)
  {
+ 
         if(!empty($term)) {
             $words = preg_split('/\s+/', $term);
 
@@ -177,10 +195,14 @@ class ProductController extends SearchableController
             }
         }
        return $query;
+
+       
  }
     
   public function updateForm($code)
   {
+    $this->authorize('update', Product::class); 
+
     $product = Product::where('code', $code)->first();
     $categories = Category::orderBy('code')->get();
 
@@ -188,10 +210,13 @@ class ProductController extends SearchableController
       'product' => $product,
       'categories' => $categories,
     ]);
+    
   }
 
   public function update(ServerRequestInterface $request, $code)
   {
+    $this->authorize('update', Product::class); 
+
     $data = $request->getParsedBody();
 
     $product = Product::where('code', $code)->first();
@@ -200,15 +225,21 @@ class ProductController extends SearchableController
 
     return redirect()->route('product-list')->with('status',"Product {$product->code} was updated.");
 
+   
+
     // return redirect()->route('product-detail', ['code' => $product['code']]);
   }
 
   public function delete($code)
   {
+    $this->authorize('delete', Product::class);
+    
     $product = Product::where('code', $code)->first();
 
     $product->delete();
 
     return redirect(session()->get('bookmark.product-detail',route('product-list')))->with('status',"Product {$product->code} was deleted.");
+
+    
   }
 }

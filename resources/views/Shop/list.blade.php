@@ -17,14 +17,10 @@
 
 </form>
 
-<div >
-    
 
-  
-    </div>
-
+@can('update', \App\Models\Shop::class)
 <a class="link" href="{{ route('shop-create-form')}}">New Shop</a>
-
+@endcan
 
 <table class="list"> 
     <tr>

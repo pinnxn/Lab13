@@ -13,6 +13,11 @@ class CategoryController extends SearchableController
 {
   public $title = 'Category';
 
+
+    public function __construct(){ 
+      $this->middleware('auth'); 
+    }
+    
     public function getQuery(){
       return Category::orderBy('code');
     }
@@ -38,12 +43,15 @@ class CategoryController extends SearchableController
       ]);
     }
 
+
     public function createForm(){
+      $this->authorize('update', Category::class); 
       return view('category.create');
     }
 
     public function create(ServerRequestInterface $request)
     {  
+      $this->authorize('update', Category::class); 
       $data = $request->getParsedBody();
       $category = Category::create($data);
       return redirect()->route('category-list')->with('status',"Category {$category->code} was created.");
@@ -51,6 +59,7 @@ class CategoryController extends SearchableController
     }
 
     public function showProduct(ServerRequestInterface $request, ProductController $productController, $code ){
+      $this->authorize('update', Category::class); 
       $category = Category::where('code',$code)->first();
       $data = $productController->prepareSearch($request->getQueryParams());
       $query = $productController->filterBySearch($category->products(), $data);
@@ -66,6 +75,7 @@ class CategoryController extends SearchableController
 
     public function addProductForm(ServerRequestInterface $request,  ProductController $productController, $code)
     {
+      $this->authorize('update', Category::class); 
       $category = $this->find($code);
       $query = Product::orderBy('code')->whereDoesntHave('category', function ($innerQuery) use ($category) {
         return $innerQuery->where('code', $category->code);
@@ -93,6 +103,7 @@ class CategoryController extends SearchableController
 
     public function updateForm($code)
     {
+      $this->authorize('update', Category::class); 
        $category = Category::where('code',$code)->first();
 
        return view('category.update',[
@@ -102,6 +113,7 @@ class CategoryController extends SearchableController
 
     public function update(ServerRequestInterface $request , $code)
     {
+      $this->authorize('update', Category::class); 
      $data = $request->getParsedBody();
 
      $category = Category::where('code',$code)->first();
@@ -116,6 +128,7 @@ class CategoryController extends SearchableController
     public function delete($code)
     {
       $category = Category::where('code',$code)->first();
+      $this->authorize('delete', $category); 
 
       $category->delete();
       return redirect()->route('category-list')->with('status',"Category {$category->code} was deleted.");

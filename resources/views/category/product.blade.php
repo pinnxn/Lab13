@@ -27,8 +27,9 @@
         </tr>
 </table>
 </form>
-
+@can('update', \App\Models\Category::class)
 <a class="link"  href="{{ route('category-add-product-form', ['code' => $category->code])}}">Add Product</a>
+@endcan
 
 <table class="list"> 
     <tr>

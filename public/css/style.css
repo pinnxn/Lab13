@@ -106,7 +106,7 @@ li a {
     margin-bottom: 12px;
 }
 
-form.form input[type='text'], form.form textarea, form.form input[type='number']{
+form.form input[type='text'], form.form textarea, form.form input[type='number'], form.form input[type='password']{
     width: 100%;
 }
 
@@ -167,3 +167,18 @@ form td:first-child{
 .footer{
     text-align: center;
 }
+
+.user{
+    text-align: right;
+}
+
+.email{
+    width: 60px;
+    text-align: center;
+}
+
+.name{
+    width: 30px;
+    text-align: center;
+}
+

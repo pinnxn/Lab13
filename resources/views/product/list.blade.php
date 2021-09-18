@@ -5,14 +5,13 @@
 @section('content')
 
 <form class="form" action="{{ route('product-list')}}" method="get">
-    
 
     <table>
         <tr>
             <td> <label for="term"><strong>Search</strong></label></td>
             <td class="blue"><strong>::</strong></td>
             <td><input type="text" name="term" id="term" value="{{$data['term']}}"></td>
-            <td class="actions"><button class="blue-box" type="submit">Search</button> <a  href="{{ route('product-list')}}"><button class="green-box">Clear</button></a></td>
+            <td class="actions"><button class="blue-box" type="submit">Search</button> <a href="{{ route('product-list')}}"><button class="green-box">Clear</button></a></td>
         </tr>
         <tr>
             <td> <label for="minPrice"><strong>Min Price</strong></label></td>
@@ -24,14 +23,21 @@
             <td class="blue"><strong>::</strong></td>
             <td><input type="text" name="maxPrice" id="maxPrice" value="{{$data['maxPrice']}}"></td>
         </tr>
-</table>
+    </table>
 </form>
 
+<nav>
+    <ul>
+        @can('create', \App\Models\Product::class)
+        <li>
+            <a class="link" href="{{ route('product-create-form')}}">New Product</a>
+        </li>
+        @endcan
+    </ul>
+</nav>
 
 
-<a class="link" href="{{ route('product-create-form')}}">New Product</a>
-
-<table class="list"> 
+<table class="list">
     <tr>
         <th>Code</th>
         <th>Name</th>

@@ -12,15 +12,22 @@
 
 <body>
     <main>
-    @include('sweetalert::alert')
+        @include('sweetalert::alert')
         <header>
             <h1>@yield('title')</h1>
         </header>
+        @auth
+        <nav class="user">
+            <span>{{ \Auth::user()->name }}</span>
+            <a href="{{ route('logout') }}">Logout</a>
+        </nav>
+        @endauth
 
         <nav>
             <a href="{{route('product-list')}}">Product</a>
             <a href="{{route('category-list')}}">Category</a>
             <a href="{{route('shop-list')}}">Shop</a>
+            <a href="{{route('user-list')}}">User</a>
         </nav>
 
         @if(session()->has('status'))
@@ -29,7 +36,7 @@
         </div>
         @endif
         <br>
-        
+
         <section>
             @yield('content')
         </section>

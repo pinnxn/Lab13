@@ -19,8 +19,9 @@
 </form>
 
 <br>
-
+@can('update', \App\Models\Product::class)
 <a class="link"  href="{{ route('product-add-shop-form', ['product' => $product->code])}}">Add Shop</a>
+@endcan
 
 
 <table class="list"> 
@@ -28,14 +29,18 @@
         <th>Code</th>
         <th>Name</th>
         <th>Owner</th>
+        @can('update', \App\Models\Product::class)
         <th>&nbsp;</th>
+        @endcan
     </tr>
     @foreach($shops as $shop)
     <tr>
         <td class="code"><a href="{{ route('shop-detail',['code'=> $shop->code]) }}">{{$shop->code}}</a></td>
         <td>{{$shop->name}}</td>
         <td>{{$shop->owner}}</td>
+        @can('update', \App\Models\Product::class)
         <td><a href="{{ route('product-remove-shop', ['product' => $product->code,'shop' => $shop->code])}}">Remove</a></td>
+        @endcan
     </tr>
     @endforeach
 </table>

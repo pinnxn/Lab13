@@ -17,13 +17,10 @@
 
 </form>
 
-<div >
-    
 
-  
-    </div>
-
+@can('update', \App\Models\Category::class)
 <a class="link" href="{{ route('category-create-form')}}">New Category</a>
+@endcan
 
 
 <table class="list"> 
