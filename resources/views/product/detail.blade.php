@@ -6,7 +6,7 @@
 
 <nav>
     <a href="{{ route('product-shop',['code' => $product->code])}}">Show Shop</a>
-    
+
     @can('update', \App\Models\Product::class)
     <a href="{{ route('product-update-form',['code' => $product->code])}}">Update</a>
     @endcan
@@ -19,7 +19,7 @@
 
 <table>
     <tr>
-        <td><strong>Code</strong></td>
+        <td> <strong>Code</strong> </td>
         <td class="blue">::</td>
         <td>{{$product->code}}</td>
     </tr>
@@ -40,7 +40,7 @@
     </tr>
 </table>
 <pre>
-    {{$product['description']}}
+{{$product['description']}}
 </pre>
 
 @endsection

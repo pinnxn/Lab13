@@ -8,14 +8,15 @@ use App\Models\Shop;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Database\QueryException;
 
 
 class ProductController extends SearchableController
 {
   public function __construct()
-    {
-        $this->middleware('auth');
-    }
+  {
+    $this->middleware('auth');
+  }
   public $title = 'Product';
 
   public function getQuery()
@@ -62,7 +63,7 @@ class ProductController extends SearchableController
   // return $query;
   // }
 
-  
+
 
 
   public function list(ServerRequestInterface $request)
@@ -76,7 +77,6 @@ class ProductController extends SearchableController
       'products' => $products->paginate(3),
       'data' => $data,
     ]);
-
   }
 
 
@@ -104,22 +104,31 @@ class ProductController extends SearchableController
   public function createForm()
   {
     $this->authorize('create', Product::class);
-   $categories = Category::orderBy('code')->get();
+    $categories = Category::orderBy('code')->get();
     return view('product.create', [
       'categories' => $categories,
     ]);
-    
   }
 
   public function create(ServerRequestInterface $request)
   {
-    $this->authorize('create', Product::class); 
-    $data = $request->getParsedBody();
-    $product = Product::create($data);
+    $this->authorize('create', Product::class);
 
-    return redirect()->route('product-list')->with('status',"Product {$product->code} was created.");
+    try {
+      $data = $request->getParsedBody();
+      $product = Product::create($data);
 
-   
+      return redirect()->route('product-list')->with('status', "Product {$product->code} was created.");
+    }
+    // catch(\Exception $excp) { 
+    //   return redirect()->back()->withInput()->withErrors([ 
+    //   'error' => $excp->getMessage(), 
+    //   ]); 
+    // }
+    catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
   }
 
   public function showShop(ServerRequestInterface $request, ShopController $shopController, $code)
@@ -138,7 +147,7 @@ class ProductController extends SearchableController
 
   public function addShopForm(ServerRequestInterface $request, ShopController $shopController, $code)
   {
-    $this->authorize('update', Product::class); 
+    $this->authorize('update', Product::class);
     $product = $this->find($code);
     $query = Shop::orderBy('code')->whereDoesntHave('products', function ($innerQuery) use ($product) {
       return $innerQuery->where('code', $product->code);
@@ -151,57 +160,64 @@ class ProductController extends SearchableController
       'product' => $product,
       'shops' => $query->paginate(5),
     ]);
-
-   
   }
 
-  function addShop(ServerRequestInterface $request, ShopController $shopController, $code) 
-  { 
-    $this->authorize('update', Product::class); 
-    $product = $this->find($code); 
-    $data = $request->getParsedBody(); 
-    $shop = $shopController->find($data['shop']); 
-    $product->shops()->attach($shop); 
-    return redirect()->route('product-list')->with('status',"Shop {$shop->code} was added to Product {$product->code}.");
-    return redirect()->back(); 
-    
-    
-  } 
-
-  function removeShop($productCode, $shopCode) { 
-    $product = $this->find($productCode); 
-    $shop = $product->shops() ->where('code', $shopCode)->firstOrFail() ; 
-    $product->shops()->detach($shop); 
-    return redirect()->route('product-list')->with('status',"Shop {$shop->code} was removed from Product {$product->code}.");
-    return redirect()->back(); 
+  function addShop(ServerRequestInterface $request, ShopController $shopController, $code)
+  {
+    $this->authorize('update', Product::class);
+    try {
+      $product = $this->find($code);
+      $data = $request->getParsedBody();
+      $shop = $shopController->find($data['shop']);
+      $product->shops()->attach($shop);
+      return redirect()->route('product-list')->with('status', "Shop {$shop->code} was added to Product {$product->code}.");
+      return redirect()->back();
     } 
-    
-    public function filterByTerm($query, $term)
- {
- 
-        if(!empty($term)) {
-            $words = preg_split('/\s+/', $term);
+    catch(QueryException $excp) { 
+      return redirect()->back()->withInput()->withErrors([ 'error' => $excp->errorInfo[2], 
+      ]); 
+      }       
+  }
 
-            foreach($words as $word) {
-                $query->where(function($innerQuery) use ($word) {
-                    return $innerQuery
-                            ->where('name','LIKE',"%{$word}%")
-                            ->orWhere('code','LIKE',"%{$word}%")
-                            ->orWhereHas('category',function($query) use ($word){
-                                $query->where('name','LIKE',"%{$word}%");
-                            });
-                            
-                });
-            }
-        }
-       return $query;
+  function removeShop($productCode, $shopCode)
+  {
+    $product = $this->find($productCode);
+    try{
+      $shop = $product->shops()->where('code', $shopCode)->firstOrFail();
+    $product->shops()->detach($shop);
+    return redirect()->route('product-list')->with('status', "Shop {$shop->code} was removed from Product {$product->code}.");
+    return redirect()->back();
+    }
+    catch (QueryException $excp) {
+      return redirect()->back()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
 
-       
- }
-    
+  }
+
+  public function filterByTerm($query, $term)
+  {
+
+    if (!empty($term)) {
+      $words = preg_split('/\s+/', $term);
+
+      foreach ($words as $word) {
+        $query->where(function ($innerQuery) use ($word) {
+          return $innerQuery
+            ->where('name', 'LIKE', "%{$word}%")
+            ->orWhere('code', 'LIKE', "%{$word}%")
+            ->orWhereHas('category', function ($query) use ($word) {
+              $query->where('name', 'LIKE', "%{$word}%");
+            });
+        });
+      }
+    }
+    return $query;
+  }
+
   public function updateForm($code)
   {
-    $this->authorize('update', Product::class); 
+    $this->authorize('update', Product::class);
 
     $product = Product::where('code', $code)->first();
     $categories = Category::orderBy('code')->get();
@@ -210,36 +226,43 @@ class ProductController extends SearchableController
       'product' => $product,
       'categories' => $categories,
     ]);
-    
   }
 
   public function update(ServerRequestInterface $request, $code)
   {
-    $this->authorize('update', Product::class); 
+    $this->authorize('update', Product::class);
 
-    $data = $request->getParsedBody();
+    try{
+      $data = $request->getParsedBody();
 
     $product = Product::where('code', $code)->first();
 
     $product->update($data);
 
-    return redirect()->route('product-list')->with('status',"Product {$product->code} was updated.");
-
-   
-
+    return redirect()->route('product-list')->with('status', "Product {$product->code} was updated.");
+    }
+    catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
     // return redirect()->route('product-detail', ['code' => $product['code']]);
   }
 
   public function delete($code)
   {
     $this->authorize('delete', Product::class);
-    
+
+   try{
     $product = Product::where('code', $code)->first();
 
     $product->delete();
 
-    return redirect(session()->get('bookmark.product-detail',route('product-list')))->with('status',"Product {$product->code} was deleted.");
-
-    
+    return redirect(session()->get('bookmark.product-detail', route('product-list')))->with('status', "Product {$product->code} was deleted.");
+   }
+   catch (QueryException $excp) {
+    return redirect()->back()->withErrors([
+      'error' => $excp->errorInfo[2],
+    ]);
+  }
   }
 }

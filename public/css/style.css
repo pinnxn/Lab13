@@ -164,6 +164,17 @@ form td:first-child{
     color: blue;
 }
 
+.error{
+    
+    display: inline-block;
+    border: 1px solid rgb(230, 0, 0);
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background-color: rgb(250, 203, 213);
+    color:red;
+}
+
 .footer{
     text-align: center;
 }
@@ -177,8 +188,10 @@ form td:first-child{
     text-align: center;
 }
 
-.name{
+.u-name{
     width: 30px;
     text-align: center;
 }
+
+
 

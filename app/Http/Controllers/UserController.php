@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Database\QueryException;
 
 class UserController extends SearchableController
 {
@@ -60,6 +61,7 @@ class UserController extends SearchableController
   public function create(ServerRequestInterface $request)
   {
     $this->authorize('create', User::class); 
+   try{
     $data = $request->getParsedBody();
     $user = new User();
     $user->name = $data['name'];
@@ -70,6 +72,10 @@ class UserController extends SearchableController
 
     return redirect()->route('user-list')->with('status',"User {$user->email} was created.");
 
+   }catch (QueryException $excp) {
+    return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+    ]);
+  }
    
   }
 
@@ -111,7 +117,8 @@ class UserController extends SearchableController
   {
     $this->authorize('update', user::class); 
 
-    $data = $request->getParsedBody();
+    try{
+      $data = $request->getParsedBody();
     
 
     $user = user::where('email', $email)->first();
@@ -126,6 +133,11 @@ class UserController extends SearchableController
 
 
     return redirect()->route('user-list')->with('status',"User {$user->email} was updated.");
+     }catch (QueryException $excp) {
+       return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+       ]);
+     }
+     
 
   }
 
@@ -133,12 +145,17 @@ class UserController extends SearchableController
   {
     $this->authorize('delete', user::class);
     
-    $user = user::where('email', $email)->first();
+    try{
+      $user = user::where('email', $email)->first();
 
     $user->delete();
 
     return redirect(session()->get('bookmark.user-detail',route('user-list')))->with('status',"User {$user->code} was deleted.");
 
+    }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
     
   }
 }

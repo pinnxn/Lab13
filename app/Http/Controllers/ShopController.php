@@ -8,6 +8,7 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Void_;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Database\QueryException;
 
 class ShopController extends SearchableController
 {
@@ -44,9 +45,15 @@ class ShopController extends SearchableController
 
     public function create(ServerRequestInterface $request)
     {  
+     try{
       $data = $request->getParsedBody();
       $shop = Shop::create($data);
       return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was created.");
+     }
+     catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
       // return redirect()->route('shop-list');
     }
 
@@ -82,23 +89,33 @@ class ShopController extends SearchableController
 
   function addProduct(ServerRequestInterface $request,  ProductController $productController, $code) 
   { 
+   try{
     $shop = $this->find($code); 
     $data = $request->getParsedBody(); 
     $product =$productController->find($data['product']); 
     $shop->products()->attach($product); 
     return redirect()->route('shop-list')->with('status',"Product {$product->code} was added to Shop {$shop->code}.");
     return redirect()->back(); 
+   }catch (QueryException $excp) {
+    return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+    ]);
+  }
   } 
 
   function removeProduct( $shopCode,$productCode) { 
+   try{
     $shop = $this->find($shopCode); 
     $product = $shop->products() ->where('code', $productCode)->firstOrFail() ; 
     $shop->products()->detach($product); 
     return redirect()->route('shop-list')->with('status',"Product {$product->code} was removed to Shop {$shop->code}.");
     return redirect()->back(); 
+   } catch (QueryException $excp) {
+    return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+    ]);
+  }
     } 
 
-    public function filterByTerm($query, $term)
+public function filterByTerm($query, $term)
  {
         if(!empty($term)) {
             $words = preg_split('/\s+/', $term);
@@ -128,22 +145,32 @@ class ShopController extends SearchableController
 
     public function update(ServerRequestInterface $request , $code)
     {
-     $data = $request->getParsedBody();
+    try{
+      $data = $request->getParsedBody();
 
-     $shop = Shop::where('code',$code)->first();
-
-     $shop->update($data);
-
-     return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was updated.");
+      $shop = Shop::where('code',$code)->first();
+ 
+      $shop->update($data);
+ 
+      return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was updated.");
+    } catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
     //  return redirect()->route('shop-detail',['code'=> $shop['code']]);
     }
 
     public function delete($code)
     {
+     try{
       $shop = Shop::where('code',$code)->first();
 
       $shop->delete();
 
       return redirect()->route('shop-list')->with('status',"Shop {$shop->code} was deleted.");
+     }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
     }
 }

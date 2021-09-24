@@ -35,6 +35,12 @@
             <span class="info">{{session()->get('status')}}</span>
         </div>
         @endif
+
+        @error('error')
+        <div class="status">
+            <span class="error">{{ $message }}</span>
+        </div>
+        @enderror
         <br>
 
         <section>

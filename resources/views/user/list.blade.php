@@ -36,8 +36,8 @@
     @foreach($users as $user)
     <tr>
         <td  class="code email" ><a href="{{ route('user-detail',['email'=> $user->email]) }}">{{$user->email}}</a></td>
-        <td class="name">{{$user->name}}</td>
-        <td class="name">{{$user->role}}</td>
+        <td class="u-name">{{$user->name}}</td>
+        <td class="u-name">{{$user->role}}</td>
     </tr>
     @endforeach
 </table>

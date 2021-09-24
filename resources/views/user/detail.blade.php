@@ -25,12 +25,12 @@
     <tr>
         <td><strong>Name</strong></td>
         <td class="blue">::</td>
-        <td class="name">{{$user->name}}</td>
+        <td >{{$user->name}}</td>
     </tr>
     <tr>
         <td><strong>Role</strong></td>
         <td class="blue">::</td>
-        <td class="name"> [{{$user->role}}]</td>
+        <td > [{{$user->role}}]</td>
     </tr>
 </table>
 

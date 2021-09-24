@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Void_;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Database\QueryException;
 
 class CategoryController extends SearchableController
 {
@@ -52,9 +53,14 @@ class CategoryController extends SearchableController
     public function create(ServerRequestInterface $request)
     {  
       $this->authorize('update', Category::class); 
+     try{
       $data = $request->getParsedBody();
       $category = Category::create($data);
       return redirect()->route('category-list')->with('status',"Category {$category->code} was created.");
+     }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
       // return redirect()->route('category-list');
     }
 
@@ -92,12 +98,17 @@ class CategoryController extends SearchableController
   
     function addProduct(ServerRequestInterface $request,  ProductController $productController, $code) 
     { 
+     try{
       $category = $this->find($code); 
       $data = $request->getParsedBody(); 
       $product =$productController->find($data['product']); 
       $category->products()->save($product); 
       return redirect()->route('category-list')->with('status',"Product {$product->code} was added to Category {$category->code}.");
       return redirect()->back(); 
+     }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
     } 
 
 
@@ -114,24 +125,34 @@ class CategoryController extends SearchableController
     public function update(ServerRequestInterface $request , $code)
     {
       $this->authorize('update', Category::class); 
-     $data = $request->getParsedBody();
+    try{
+      $data = $request->getParsedBody();
 
-     $category = Category::where('code',$code)->first();
-
-     $category->update($data);
-
-     return redirect()->route('category-list')->with('status',"Category {$category->code} was updated.");
+      $category = Category::where('code',$code)->first();
+ 
+      $category->update($data);
+ 
+      return redirect()->route('category-list')->with('status',"Category {$category->code} was updated.");
+    }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
 
      //return redirect()->route('category-detail',['code'=> $category['code']]);
     }
 
     public function delete($code)
     {
+     try{
       $category = Category::where('code',$code)->first();
       $this->authorize('delete', $category); 
 
       $category->delete();
       return redirect()->route('category-list')->with('status',"Category {$category->code} was deleted.");
+     }catch (QueryException $excp) {
+      return redirect()->back()->withInput()->withErrors(['error' => $excp->errorInfo[2],
+      ]);
+    }
 
       // return redirect()->route('category-list');
     }
